@@ -19,6 +19,7 @@
 </head>
 <body>
 <h1>PhotoParcel サポート</h1>
+<p><a href="#en">English</a></p>
 <p>PhotoParcel（フォトパーセル）は、完成した写真を案件別・用途別のフォルダへ素早く振り分けて整理する macOS / iPadOS / iOS アプリです。</p>
 
 <h2>使い方</h2>
@@ -36,6 +37,14 @@
   <li><strong>マークの付いた写真だけを表示</strong>できます。候補を集めてから、その中でさらに絞り込めます</li>
   <li>マークは写真を移動したり名前を変えたりしても付いたまま残ります。アプリを終了しても残ります</li>
   <li>まとめて外すときは「マーク解除」（iPad / iPhone は「…」メニュー）から行えます</li>
+</ul>
+
+<h2>星で絞り込む</h2>
+<p>PhotoParcel Select などで付けた<strong>星</strong>（写真の中、または <code>.xmp</code> サイドカーに書かれた標準の XMP の星）を読んで、星の付いた写真だけを表示できます。PhotoParcel は星を読むだけで、書き換えません。</p>
+<ul>
+  <li>Mac は一覧の「星」メニューまたは「整理」メニューの「星で絞り込み」、iPad / iPhone は「…」メニューの「星で絞り込み」から、「星3つ以上」のように選びます</li>
+  <li>星の付いた写真には、サムネイルに黄色の星が出ます</li>
+  <li>フォルダを変えると絞り込みは解除されます</li>
 </ul>
 
 <h2>数字キーで一気に振り分ける</h2>
@@ -83,6 +92,82 @@
 <p><a href="mailto:emc.hs07@gmail.com">emc.hs07@gmail.com</a></p>
 
 <p><a href="privacy.html">プライバシーポリシー</a></p>
+
+<hr id="en" style="margin-top:4rem">
+<section lang="en">
+<h1>PhotoParcel Support</h1>
+<p>PhotoParcel is an app for macOS, iPadOS and iOS that moves finished photos into the right folders, quickly and reliably. The app is available in English and Japanese and follows your device's language.</p>
+
+<h2>Getting started</h2>
+<ol>
+  <li>Tap or click “+ Add Folder” and choose a photo folder you want to organize. Your folders are restored automatically the next time you open the app.</li>
+  <li>Select a folder in the tree to see its photos as thumbnails.</li>
+  <li>Select thumbnails and drag them onto a folder to move them. That's it.</li>
+</ol>
+
+<h2>Marks for narrowing down</h2>
+<p>Marks are for “I only want to pick a few of these.” <strong>Nothing is written to the photos.</strong> No sidecar files are created and no metadata is changed, so the photos look the same in other apps.</p>
+<ul>
+  <li>Select photos and mark them. On Mac use the “Marks” menu above the grid or press <strong>M</strong>. On iPad and iPhone use “Mark n Photos” at the bottom. You can also mark the photo you're viewing in full screen</li>
+  <li><strong>Show only marked photos</strong> to narrow your choices further</li>
+  <li>Marks stay with photos after you move or rename them, and after you quit the app</li>
+  <li>To clear marks all at once, use “Clear All Marks in This Folder” (on iPad and iPhone, in the “…” menu)</li>
+</ul>
+
+<h2>Star filter</h2>
+<p>PhotoParcel reads <strong>star ratings</strong> set in PhotoParcel Select and other standard XMP star ratings (stored in the photo or in a <code>.xmp</code> sidecar), and can show only the photos with a rating. PhotoParcel only reads ratings and never changes them.</p>
+<ul>
+  <li>On Mac use the “Stars” menu above the grid or “Filter by Stars” in the “Organize” menu. On iPad and iPhone use “Filter by Stars” in the “…” menu. Choose an option such as “3 Stars &amp; Up”</li>
+  <li>Rated photos show yellow stars on their thumbnails</li>
+  <li>The filter is cleared when you switch folders</li>
+</ul>
+
+<h2>Number keys for one-step sorting</h2>
+<p>Assign numbers 1 to 9 to the folders you use most. Assigned folders show a blue badge in the tree.</p>
+<ul>
+  <li><strong>Mac</strong>: right-click a folder and choose “Assign Number Key.” Then select photos and press the number to move them. In full screen, the photo you're viewing is moved</li>
+  <li><strong>iPad / iPhone</strong>: touch and hold a folder and choose “Assign Number Key.” One-tap sorting buttons then appear at the bottom in selection mode and in full screen. In full screen, the next photo is shown after you sort</li>
+  <li>To remove assignments, use “Number Key Assignments” in the “Organize” menu (on iPad and iPhone, in the “…” menu)</li>
+</ul>
+
+<h2>RAW + JPG and batch rename</h2>
+<ul>
+  <li>RAW and JPG files with the same name are shown as one item with a “RAW+JPG” badge. When moved, they travel together with any <code>.xmp</code> sidecar (you can turn this off in the “Organize” / “…” menu)</li>
+  <li><strong>Batch Rename</strong> is in the “Organize” menu on Mac and the “…” menu on iPad and iPhone. Rename photos with a name, the date taken and a sequence number. RAW+JPG pairs and <code>.xmp</code> sidecars get the same name and number, so pairs stay together</li>
+  <li>You can set the <strong>start number</strong>, so numbering can continue from any number, not just 1</li>
+  <li>Before you run it, you see how many files will change and a preview of the first and last new names. You can undo it afterward</li>
+</ul>
+
+<h2>FAQ</h2>
+<dl>
+  <dt>Q. A folder shows a lock and I can't see inside it</dt>
+  <dd>A. The app doesn't have access to that folder. Choose the folder again with “+ Add Folder” to give access.</dd>
+  <dt>Q. Can it show RAW files?</dt>
+  <dd>A. Yes. Major RAW formats such as CR3, CR2, ARW, NEF, RAF and DNG are supported (shown quickly using the embedded preview; no RAW processing is done).</dd>
+  <dt>Q. I want to copy instead of move (or the other way around)</dt>
+  <dd>A. Drag and drop moves photos. Switch between “Move” and “Copy” above the grid (on Mac you can also hold Option while dragging to copy). If a file with the same name already exists, a number is added, like “name 2,” so nothing is overwritten.</dd>
+  <dt>Q. I made a mistake. Can I undo it?</dt>
+  <dd>A. Moves, batch renames and moving to the Trash can be undone. On Mac press Command-Z (Shift-Command-Z to redo). On iPad and iPhone use “Undo Move” in the “…” menu. Copies are not undone.</dd>
+  <dt>Q. Can I delete photos?</dt>
+  <dd>A. Yes. On Mac use the Delete button, “Move to Trash” in the right-click menu or the Delete key. On iPad and iPhone use “Delete n Photos” in selection mode. <strong>You can also delete the photo you're viewing in full screen.</strong> A confirmation always appears first and shows the total number of files, including pairs. Locations that don't support the Trash delete files permanently, and the app tells you so.</dd>
+  <dt>Q. What are the numbers on the thumbnails?</dt>
+  <dd>A. They show the current order. They match the “n / total” shown in full screen, so you always know which photo you're on.</dd>
+  <dt>Q. Can I change the sort order?</dt>
+  <dd>A. The default is by date taken. You can also sort by name, date modified or size, in ascending or descending order (“Organize” / “…” menu).</dd>
+  <dt>Q. How do I use full screen?</dt>
+  <dd>A. On Mac, double-click a thumbnail (or press Return). Use the arrow keys to go to the next or previous photo. Press Return, Z or double-click to switch to <strong>100% view</strong>, and <strong>drag the photo</strong> to look around. Press I for shooting details and Esc to close. On iPad and iPhone, tap a photo for full screen, swipe or use the side buttons to move between photos, and pinch or double-tap to zoom.</dd>
+  <dt>Q. Can I organize photos on an external SSD?</dt>
+  <dd>A. Yes. If the drive (exFAT, for example) can't keep access permissions, the folder is added “for this session only” and shows an orange clock icon in the tree. Add it again the next time you open the app.</dd>
+  <dt>Q. What is the PhotoParcel Select integration?</dt>
+  <dd>A. When the companion app <strong>PhotoParcel Select</strong> (for picking keepers from large sets of RAW files) is installed, the Mac toolbar shows “Pick in PhotoParcel Select,” which hands the current folder over directly. You can come back the same way. If Select isn't installed, the button isn't shown.</dd>
+</dl>
+
+<h2>Contact</h2>
+<p>For bug reports or requests, please email us. English or Japanese is fine.</p>
+<p><a href="mailto:emc.hs07@gmail.com">emc.hs07@gmail.com</a></p>
+
+<p><a href="privacy.html#en">Privacy Policy</a></p>
+</section>
 
 <footer>© 2026 Hideki Sato — PhotoParcel</footer>
 </body>
