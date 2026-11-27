@@ -10,16 +10,129 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "PhotoParcel", "operatingSystem": "macOS, iOS, iPadOS", "applicationCategory": "UtilitiesApplication", "description": "サムネイルを見ながら、写真をフォルダへサッと振り分け。一括リネームもできます。", "url": "https://emchs07-prog.github.io/photoparcel-support/", "author": {"@type": "Person", "name": "Hideki Sato", "url": "https://emchs07-prog.github.io/"}, "downloadUrl": "https://apps.apple.com/jp/app/id6797479444"}</script>
 <!-- 検索向けの設定（ここまで） -->
 <style>
-  :root { color-scheme: light dark; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
-    max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.8;
+  :root {
+    color-scheme: light dark;
+    --bg:#ffffff; --bg2:#f5f7fb; --card:#ffffff; --text:#14171f; --mute:#5b6475; --line:#e3e7ef;
+    --accent:#d06a1f; --accent2:#c9468a; --code:#0b0d12; --codetext:#e8ecf3; --shadow:0 10px 30px rgba(20,30,60,.08);
   }
-  h1 { border-bottom: 3px solid #C9A23A; padding-bottom: .4rem; }
-  h2 { margin-top: 2.5rem; color: #C9A23A; }
-  footer { margin-top: 4rem; font-size: .85rem; opacity: .7; }
-  a { color: #B8892A; }
-  dt { font-weight: bold; margin-top: 1rem; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0b0d12; --bg2:#11151d; --card:#151a23; --text:#e9edf5; --mute:#9aa4b6; --line:#232a36;
+            --accent:#ffa45c; --accent2:#ff86c0; --shadow:0 10px 30px rgba(0,0,0,.35); }
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; scroll-padding-top:72px; }
+  body { margin:0; background:var(--bg); color:var(--text); line-height:1.8;
+         font-family:-apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+         -webkit-font-smoothing:antialiased; }
+  a { color:var(--accent); }
+  img { max-width:100%; height:auto; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 24px; }
+  /* 上の帯 */
+  .top { position:sticky; top:0; z-index:10; backdrop-filter:saturate(180%) blur(14px); -webkit-backdrop-filter:saturate(180%) blur(14px);
+         background:color-mix(in srgb, var(--bg) 82%, transparent); border-bottom:1px solid var(--line); }
+  .top .wrap { display:flex; align-items:center; gap:16px; height:56px; }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:700; text-decoration:none; color:var(--text); white-space:nowrap; }
+  .brand img { width:28px; height:28px; border-radius:7px; }
+  .top nav { margin-left:auto; display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; }
+  .top nav a { color:var(--mute); text-decoration:none; font-size:.88rem; padding:6px 10px; border-radius:8px; white-space:nowrap; }
+  .top nav a:hover { color:var(--text); background:var(--bg2); }
+  /* 先頭 */
+  .hero { position:relative; overflow:hidden; text-align:center; padding:72px 0 40px; }
+  .hero::before { content:""; position:absolute; inset:-30% -10% auto; height:120%; z-index:-1; filter:blur(20px);
+    background:radial-gradient(40% 45% at 30% 35%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+               radial-gradient(35% 40% at 72% 30%, color-mix(in srgb, var(--accent2) 18%, transparent), transparent 70%); }
+  .hero .icon { width:112px; height:112px; border-radius:25px; box-shadow:var(--shadow); }
+  .hero h1 { font-size:clamp(2.4rem, 6vw, 3.6rem); line-height:1.15; margin:20px 0 4px; letter-spacing:-.01em; font-weight:800; }
+  .hero .yomi { color:var(--mute); font-size:.9rem; margin:0; }
+  .hero .sub { font-size:clamp(1.15rem, 2.6vw, 1.5rem); font-weight:700; margin:14px 0 10px;
+    background:linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .hero .lead { max-width:36em; margin:0 auto; color:var(--mute); }
+  .chips { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin:20px 0 0; padding:0; list-style:none; }
+  .chips li { font-size:.82rem; font-weight:600; color:var(--mute); border:1px solid var(--line); background:var(--card); border-radius:999px; padding:3px 12px; }
+  .btns { display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:28px 0 0; }
+  .btn { display:inline-flex; align-items:center; gap:8px; font-weight:700; text-decoration:none; border-radius:12px; padding:12px 22px; }
+  .btn.primary { background:var(--text); color:var(--bg); }
+  .btn.ghost { border:1px solid var(--line); color:var(--text); background:var(--card); }
+  .btn:hover { opacity:.88; }
+  .shot-hero { margin:48px auto 0; max-width:960px; }
+  .shot-hero img, .gallery img { display:block; width:100%; border-radius:12px; border:1px solid var(--line); box-shadow:var(--shadow); }
+  .note { max-width:44em; margin:28px auto 0; font-size:.88rem; color:var(--mute); text-align:center; }
+  /* 節 */
+  section.block { padding:64px 0; }
+  section.block.alt { background:var(--bg2); }
+  .eyebrow { display:block; text-align:center; font-size:.78rem; font-weight:700; letter-spacing:.12em; color:var(--accent); margin:0 0 6px; }
+  h2 { text-align:center; font-size:clamp(1.5rem, 3.4vw, 2rem); line-height:1.35; margin:0 0 12px; }
+  .intro { text-align:center; color:var(--mute); max-width:38em; margin:0 auto 36px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px 22px 18px; }
+  .card .ic { display:inline-grid; place-items:center; width:40px; height:40px; border-radius:11px; font-size:1.2rem;
+              background:color-mix(in srgb, var(--accent) 14%, transparent); }
+  .card h3 { font-size:1.06rem; margin:12px 0 6px; line-height:1.5; }
+  .card p { margin:0; color:var(--mute); font-size:.94rem; }
+  .card .tag { display:inline-block; font-size:.72rem; font-weight:700; color:var(--accent2); margin-left:6px; vertical-align:2px; }
+  .codes { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:28px 0 0; padding:0; list-style:none; }
+  .codes li { font-family:Menlo, ui-monospace, monospace; font-size:.85rem; background:var(--code); color:var(--codetext); border-radius:8px; padding:4px 12px; }
+  /* 画面 */
+  .gallery { display:grid; grid-auto-flow:column; grid-auto-columns:min(82%, 720px); gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 4px 16px; }
+  .gallery figure { margin:0; scroll-snap-align:center; }
+  .gallery.phone { grid-auto-columns:min(56%, 240px); }
+  .gallery figcaption { font-size:.88rem; color:var(--mute); margin-top:10px; text-align:center; }
+  .gallery-label { font-weight:700; margin:32px 0 12px; }
+  /* 使い方 */
+  .how { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; }
+  .how .card h3 { margin-top:0; font-size:1.15rem; }
+  .how ol { margin:0; padding-left:1.3em; }
+  .how li { margin:0 0 8px; }
+  kbd { font-family:-apple-system, sans-serif; font-size:.82em; border:1px solid var(--line); border-bottom-width:2px; border-radius:6px; padding:0 6px; background:var(--bg2); }
+  .md-list { max-width:760px; margin:0 auto; padding-left:1.3em; }
+  .md-list li { margin:0 0 10px; }
+  .for { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; max-width:860px; margin:0 auto; padding:0; list-style:none; }
+  .for li { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; font-weight:600; }
+  .for li::before { content:"✓"; color:var(--accent); margin-right:8px; }
+  /* よくある質問 */
+  .faq { max-width:780px; margin:0 auto; }
+  .faq details { background:var(--card); border:1px solid var(--line); border-radius:14px; margin:0 0 10px; }
+  .faq summary { cursor:pointer; list-style:none; padding:16px 48px 16px 20px; font-weight:700; position:relative; }
+  .faq summary::-webkit-details-marker { display:none; }
+  .faq summary::after { content:"+"; position:absolute; right:20px; top:50%; transform:translateY(-50%); font-size:1.3rem; color:var(--mute); }
+  .faq details[open] summary::after { content:"−"; }
+  .faq .a { padding:0 20px 16px; color:var(--mute); }
+  .faq .a p { margin:0 0 8px; }
+  /* お問い合わせ */
+  .contact { max-width:640px; margin:0 auto; text-align:center; }
+  .contact .card { padding:28px; }
+  .contact p { margin:0 0 10px; }
+  .other-apps { max-width:780px; margin:0 auto !important; padding:56px 24px 0; }
+  .other-apps h2 { margin-bottom:4px; }
+  .other-apps > p { text-align:center; }
+  .other-apps ul { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:4px 20px; }
+  .other-apps li { line-height:1.5; }
+  footer { text-align:center; color:var(--mute); font-size:.85rem; padding:40px 24px 56px; margin-top:56px; border-top:1px solid var(--line); }
+  @media (max-width:640px) { .top nav { display:none; } .hero { padding-top:48px; } section.block { padding:48px 0; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
+  .en { padding-top:24px; }
+  .en-sep { border:0; border-top:1px solid var(--line); margin:64px 0 0; }
+  .en .how { grid-template-columns:1fr; max-width:780px; margin:0 auto; }
+  .keys { display:grid; grid-template-columns:repeat(auto-fill, minmax(420px, 1fr)); gap:16px; align-items:start; }
+  .keys h3 { margin:0 0 10px; font-size:1.05rem; }
+  .keys table { width:100%; border-collapse:collapse; font-size:.92rem; }
+  .keys th { text-align:left; white-space:nowrap; padding:6px 14px 6px 0; vertical-align:top; font-weight:400; }
+  .keys td { padding:6px 0; color:var(--mute); border-bottom:1px solid var(--line); }
+  .keys tr:last-child td { border-bottom:0; }
+  .keys-note { text-align:center; color:var(--mute); font-size:.9rem; margin:20px auto 0; max-width:44em; }
+  @media (max-width:640px) { .keys { grid-template-columns:1fr; } }
+  .notecard { display:block; text-align:left; text-decoration:none; color:var(--text); transition:transform .15s ease; }
+  .notecard:hover { transform:translateY(-2px); }
+  .nc-site { display:inline-block; font-size:.75rem; font-weight:700; color:var(--bg); background:var(--text); border-radius:6px; padding:1px 8px; }
+  .nc-title { display:block; font-weight:700; font-size:1.1rem; line-height:1.5; margin:10px 0 6px; }
+  .nc-lead { display:block; color:var(--mute); font-size:.92rem; }
+  .nc-go { display:block; color:var(--accent); font-weight:700; margin-top:10px; }
+  .detail { display:grid; grid-template-columns:repeat(auto-fit, minmax(420px, 1fr)); gap:16px; align-items:start; }
+  .detail .card h3 { margin-top:0; font-size:1.1rem; }
+  .detail .card > p { color:var(--mute); font-size:.94rem; margin:0 0 8px; }
+  .detail ul { margin:0; padding-left:1.2em; } .detail li { margin:0 0 8px; }
+  .v15 { display:inline-block; font-size:.72rem; font-weight:700; color:#fff; background:var(--accent2); border-radius:999px; padding:1px 9px; margin-left:8px; vertical-align:3px; }
+  @media (max-width:640px) { .detail { grid-template-columns:1fr; } }
 </style>
 <!-- リンクを貼ったときに出る紹介カード（OGP） -->
 <meta property="og:type" content="website">
@@ -32,81 +145,153 @@
 <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
-<h1>PhotoParcel</h1>
-<p class="og-card"><img src="og.png" alt="PhotoParcelの紹介" width="1200" height="630" style="display:block;width:100%;max-width:720px;height:auto;border-radius:12px;margin:12px 0 24px;"></p>
-<p><a href="#en">English</a></p>
-<p>PhotoParcel（フォトパーセル）は、完成した写真を案件別・用途別のフォルダへ素早く振り分けて整理する macOS / iPadOS / iOS アプリです。</p>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#"><img src="img/icon.png" alt="" width="28" height="28">PhotoParcel</a>
+  <nav aria-label="ページ内の移動"><a href="#features">特長</a><a href="#numkeys">数字キー</a><a href="#screens">画面</a><a href="#howto">使い方</a><a href="#faq">よくある質問</a><a href="#contact">お問い合わせ</a><a href="#en">English</a></nav>
+</div></header>
 
-<h2>使い方</h2>
-<ol>
+<main>
+<section class="hero"><div class="wrap">
+  <img class="icon" src="img/icon.png" alt="PhotoParcel のアイコン" width="112" height="112">
+  <h1>PhotoParcel</h1>
+  <p class="yomi">フォトパーセル</p>
+  <p class="sub">写真を、見ながらフォルダへ振り分ける。</p>
+  <p class="lead">仕上がった写真を、用途別のフォルダへ素早く振り分けて整理するアプリです。サムネイルを見ながらドラッグするだけ。よく使う行き先は数字キー1つで送れます。</p>
+  <ul class="chips"><li>Mac</li><li>iPhone</li><li>iPad</li><li>一度の購入で全部の端末に</li><li>通信なし・データの収集なし</li></ul>
+  <div class="btns">
+    <a class="btn primary" href="https://apps.apple.com/jp/app/id6797479444">App Store で見る</a>
+    <a class="btn ghost" href="#howto">使い方を見る</a>
+  </div>
+  <figure class="shot-hero" style="margin-left:auto;margin-right:auto;"><img src="img/mac-01.jpg" alt="Mac の PhotoParcel。左にフォルダのツリー、右に写真のサムネイル。マークを付けた写真はオレンジの枠" width="1600" height="1000"></figure>
+  <p class="note"><a href="#en">English</a></p>
+</div></section>
+
+<section class="block alt" id="features"><div class="wrap">
+  <span class="eyebrow">FEATURES</span>
+  <h2>選んで、送って、片付ける</h2>
+  <p class="intro">大量の写真を、目で確かめながら行き先ごとに分けていく。その作業を速く、間違えずに済ませるための道具です。</p>
+  <div class="grid">
+    <div class="card"><span class="ic" aria-hidden="true">🗂️</span><h3>ドラッグで振り分け</h3><p>フォルダを登録して、サムネイルを行き先のフォルダへドラッグするだけ。同じ名前があっても上書きせず、自動で番号を付けます。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">🔢</span><h3>数字キー1つで振り分け</h3><p>よく使う行き先に 1〜9 を割り当てておけば、写真を選んで数字を押すだけで移動（コピーにも切り替え可）。iPad・iPhone はワンタップのボタンで。<a href="#numkeys">くわしく</a></p></div>
+    <div class="card"><span class="ic" aria-hidden="true">✅</span><h3>マークで候補を絞る</h3><p>「この中から数枚だけ」に使う目印。写真には何も書き込まないので、ほかのソフトからの見え方は変わりません。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">⭐️</span><h3>星で絞り込む<span class="tag">1.5 から</span></h3><p>PhotoParcel Select などで付けた星（標準の XMP の星）を読んで、星3つ以上のように絞り込めます。星は読むだけで書き換えません。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">📷</span><h3>RAW + JPG をひとまとめ</h3><p>同じ名前の RAW と JPG を1枚として表示し、.xmp も含めて一緒に動かします。主な RAW 形式の表示に対応。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">✏️</span><h3>一括リネーム</h3><p>名前・撮影日・連番でまとめて付け直し。RAW+JPG と .xmp は同じ名前にそろえます。開始番号も指定でき、実行後に取り消せます。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">🔍</span><h3>全画面で確かめる</h3><p>全画面表示で1枚ずつ確認し、100% 表示や撮影データも。見ている1枚をそのまま振り分け・削除できます。</p></div>
+    <div class="card"><span class="ic" aria-hidden="true">↩️</span><h3>取り消しができる</h3><p>移動・一括リネーム・ゴミ箱への削除は取り消せます。削除の前には、ペアを含めた合計のファイル数を必ず確認します。</p></div>
+  </div>
+</div></section>
+
+<section class="block" id="numkeys"><div class="wrap">
+  <span class="eyebrow">NUMBER KEYS</span>
+  <h2>数字キー1つで、行き先へ</h2>
+  <p class="intro">よく使う移動先のフォルダに 1〜9 の数字を割り当てておくと、写真を選んで数字キーを押すだけで、そのフォルダへ送れます。ドラッグで行き先まで運ぶ必要がありません。</p>
+  <figure class="shot-hero" style="margin:0 auto 28px;"><img src="img/mac-05.jpg" alt="Mac の PhotoParcel。左のツリーのフォルダに青い丸の数字（1 選んだ写真、2 候補、3 ボツ）が付き、写真を3枚選んでいる" width="1600" height="1000" loading="lazy"><figcaption style="text-align:center;color:var(--mute);font-size:.88rem;margin-top:10px;">ツリーの青い丸が割り当てた数字。この状態で 1 を押すと、選んだ3枚が「選んだ写真」へ移ります</figcaption></figure>
+  <div class="how">
+    <div class="card"><h3>Mac</h3><ol>
+      <li>移動先のフォルダを右クリックして「数字キーを割当て」で、1〜9 から選びます。ツリーのフォルダに青い丸の数字が付きます。</li>
+      <li>写真を選んで（⌘ クリックで何枚でも）、数字キーを押します。選んだ写真がそのフォルダへ移ります。</li>
+      <li>全画面表示のときは、表示している1枚が移ります。見ながら1枚ずつ振り分けられます。</li>
+      <li>ツールバーで「コピー」を選んでおくと、移動ではなくコピーになります。</li>
+    </ol></div>
+    <div class="card"><h3>iPhone・iPad</h3><ol>
+      <li>移動先のフォルダを長押しして「数字を割当て」で、1〜9 から選びます。</li>
+      <li>選択モードの下と全画面表示の下に、「①選んだ写真」のようなワンタップの振り分けボタンが並びます。</li>
+      <li>全画面表示では、振り分けたあと次の写真が自動で出ます。</li>
+      <li>画面上の「移動」「コピー」の切り替えで、コピーにもできます。</li>
+    </ol></div>
+  </div>
+  <p class="keys-note">割り当ての解除は「整理」メニュー（iPhone・iPad は「…」メニュー）の「数字の割当て」から。同じ名前のファイルがあっても上書きせず、自動で番号を付けます。移動は取り消せます。</p>
+</div></section>
+
+<section class="block alt" id="screens"><div class="wrap">
+  <span class="eyebrow">SCREENS</span>
+  <h2>画面</h2>
+  <p class="intro">横にすべらせると、ほかの画面も見られます。</p>
+  <p class="gallery-label">Mac</p>
+  <div class="gallery">
+    <figure><img src="img/mac-01.jpg" alt="" width="1600" height="1000" loading="lazy"><figcaption>マークで候補を集める</figcaption></figure>
+    <figure><img src="img/mac-02.jpg" alt="" width="1600" height="1000" loading="lazy"><figcaption>マークの付いた写真だけを表示</figcaption></figure>
+    <figure><img src="img/mac-03.jpg" alt="" width="1600" height="1000" loading="lazy"><figcaption>全画面で1枚ずつ確かめる</figcaption></figure>
+    <figure><img src="img/mac-04.jpg" alt="" width="1600" height="1000" loading="lazy"><figcaption>一括リネーム。実行の前に変更後の名前を確かめられる</figcaption></figure>
+  </div>
+  <p class="gallery-label">iPhone</p>
+  <div class="gallery phone">
+    <figure><img src="img/iphone-01.jpg" alt="" width="552" height="1200" loading="lazy"><figcaption>マークで候補を絞る</figcaption></figure>
+    <figure><img src="img/iphone-02.jpg" alt="" width="552" height="1200" loading="lazy"><figcaption>全画面表示</figcaption></figure>
+  </div>
+</div></section>
+
+<section class="block" id="howto"><div class="wrap">
+  <span class="eyebrow">HOW TO</span>
+  <h2>使い方</h2>
+  <p class="intro">登録して、選んで、ドラッグ。</p>
+  <div class="how" style="grid-template-columns:1fr;max-width:780px;margin:0 auto 24px;">
+    <div class="card"><h3>はじめに</h3><ol>
   <li>「＋ フォルダを追加」で、整理したい写真フォルダを登録します（登録したフォルダは次回起動時も自動で復元されます）。</li>
   <li>ツリーでフォルダを選ぶと、そのフォルダの写真がサムネイルで表示されます。</li>
   <li>サムネイルを選択して、移動先フォルダへドラッグ＆ドロップするだけで振り分け完了です。</li>
-</ol>
-
-<h2>マークで候補を絞る</h2>
-<p>「この中から数枚だけ選びたい」というときに使う目印です。<strong>写真そのものには何も書き込みません。</strong>
+</ol></div>
+  </div>
+  <div class="detail">
+    <div class="card"><h3>マークで候補を絞る</h3><p>「この中から数枚だけ選びたい」というときに使う目印です。<strong>写真そのものには何も書き込みません。</strong>
 サイドカーファイルを作ったり撮影データを書き換えたりしないので、ほかのソフトから見たときの見え方は変わりません。</p>
 <ul>
   <li>写真を選んでマークを付けます。Mac は一覧の「マーク」メニューまたは <strong>M キー</strong>、iPad / iPhone は下部の「n枚にマーク」です。全画面表示中も、その1枚に付け外しできます</li>
   <li><strong>マークの付いた写真だけを表示</strong>できます。候補を集めてから、その中でさらに絞り込めます</li>
   <li>マークは写真を移動したり名前を変えたりしても付いたまま残ります。アプリを終了しても残ります</li>
   <li>まとめて外すときは「マーク解除」（iPad / iPhone は「…」メニュー）から行えます</li>
-</ul>
-
-<h2>星で絞り込む</h2>
-<p>PhotoParcel Select などで付けた<strong>星</strong>（写真の中、または <code>.xmp</code> サイドカーに書かれた標準の XMP の星）を読んで、星の付いた写真だけを表示できます。PhotoParcel は星を読むだけで、書き換えません。</p>
+</ul></div>
+    <div class="card"><h3>星で絞り込む<span class="v15">1.5 から</span></h3><p>PhotoParcel Select などで付けた<strong>星</strong>（写真の中、または <code>.xmp</code> サイドカーに書かれた標準の XMP の星）を読んで、星の付いた写真だけを表示できます。PhotoParcel は星を読むだけで、書き換えません。</p>
 <ul>
   <li>Mac は一覧の「星」メニューまたは「整理」メニューの「星で絞り込み」、iPad / iPhone は「…」メニューの「星で絞り込み」から、「星3つ以上」のように選びます</li>
   <li>星の付いた写真には、サムネイルに黄色の星が出ます</li>
   <li>フォルダを変えると絞り込みは解除されます</li>
-</ul>
-
-<h2>数字キーで一気に振り分ける</h2>
-<p>よく使う移動先には 1〜9 の数字を割り当てておけます。割り当てたフォルダにはツリーに青い丸のバッジが付きます。</p>
+</ul></div>
+    <div class="card"><h3>数字キーで一気に振り分ける</h3><p>よく使う移動先には 1〜9 の数字を割り当てておけます。割り当てたフォルダにはツリーに青い丸のバッジが付きます。</p>
 <ul>
   <li><strong>Mac</strong>：フォルダを右クリックして「数字キーを割当て」。あとは写真を選んで数字キーを押すだけで移動します。全画面表示中は、表示している1枚が移動します</li>
-  <li><strong>iPad / iPhone</strong>：フォルダを長押しして「数字を割当て」。選択モードの下部と全画面表示の下部に「①納品」のようなワンタップの振り分けボタンが並びます。全画面表示では振り分けたあと次の写真が自動で表示されます</li>
+  <li><strong>iPad / iPhone</strong>：フォルダを長押しして「数字を割当て」。選択モードの下部と全画面表示の下部に「①選んだ写真」のようなワンタップの振り分けボタンが並びます。全画面表示では振り分けたあと次の写真が自動で表示されます</li>
   <li>割り当ての解除は「整理」メニュー（iPad / iPhone は「…」メニュー）の「数字の割当て」から行えます</li>
-</ul>
-
-<h2>RAW + JPG と一括リネーム</h2>
-<ul>
+</ul></div>
+    <div class="card"><h3>RAW + JPG と一括リネーム</h3><ul>
   <li>同じ名前の RAW と JPG は1枚にまとめて表示され、「RAW+JPG」のバッジが付きます。移動するときは <code>.xmp</code> サイドカーも含めて一緒に動きます（「整理」／「…」メニューで切り替えられます）</li>
   <li><strong>一括リネーム</strong>は、Mac は「整理」メニュー、iPad / iPhone は「…」メニューから。名前・撮影日・連番でまとめて付け直せます。RAW+JPG や <code>.xmp</code> は同じ名前・同じ連番にそろえるので、ペアが崩れません</li>
   <li>連番の<strong>開始番号</strong>を指定できます。1 からではなく、途中の番号から通しで付けられます</li>
   <li>実行前に対象の枚数と、最初と最後の新しい名前のプレビューが出ます。実行後に取り消すこともできます</li>
-</ul>
+</ul></div>
+  </div>
+</div></section>
 
-<h2>よくある質問</h2>
-<dl>
-  <dt>Q. フォルダが 🔒 表示になり中が見えません</dt>
-  <dd>A. アプリからのアクセス権がないフォルダです。「＋ フォルダを追加」からそのフォルダを選び直すとアクセスできるようになります。</dd>
-  <dt>Q. RAW ファイルは表示できますか？</dt>
-  <dd>A. CR3 / CR2 / ARW / NEF / RAF / DNG など主要な RAW 形式の表示に対応しています（内蔵プレビューを利用した高速表示です。現像処理は行いません）。</dd>
-  <dt>Q. 写真をコピーではなく移動したい／移動ではなくコピーしたい</dt>
-  <dd>A. ドラッグ＆ドロップは「移動」です。iPad / iPhone の「n枚を移動...」から開く移動先の画面では、移動とコピーを切り替えられます。同名ファイルがある場合は「名前 2」のように自動で連番が付き、上書きはされません。</dd>
-  <dt>Q. 操作を間違えました。元に戻せますか？</dt>
-  <dd>A. 移動・一括リネーム・ゴミ箱への削除は取り消せます。Mac は ⌘Z（やり直しは ⇧⌘Z）、iPad / iPhone は「…」メニューの「取り消す」から行えます。コピーは対象外です。</dd>
-  <dt>Q. 写真を削除できますか？</dt>
-  <dd>A. できます。Mac は一覧の「削除」ボタン・右クリックの「ゴミ箱に入れる」・Delete キー、iPad / iPhone は選択モードの「n枚を削除」です。<strong>全画面表示からも、見ている1枚を削除できます</strong>（上部のゴミ箱ボタン、Mac は Delete キーまたは D キー）。押すと必ず確認画面が出て、ペアを含めた合計ファイル数が示されます。ゴミ箱に対応していない保存先では完全に削除されるため、その旨が表示されます。</dd>
-  <dt>Q. サムネイルに出ている番号は何ですか？</dt>
-  <dd>A. いま並んでいる順の通し番号です。全画面表示に出る「n / 総数」と同じ数え方なので、「何枚目を見ているか」が一覧と全画面で一致します。</dd>
-  <dt>Q. 写真の並び順を変えられますか？</dt>
-  <dd>A. 既定は撮影日順です。名前・更新日・サイズの順にも変更でき、昇順と降順を切り替えられます（「整理」／「…」メニュー）。</dd>
-  <dt>Q. 全画面表示の操作方法は？</dt>
-  <dd>A. Mac はサムネイルをダブルクリック（または Return キー）で全画面表示。前後の写真へは ← → と ↑ ↓ のどちらでも送れます（画面の左右クリックでも移動します）。Return キー・ダブルクリック・Z キーで<strong>100%表示</strong>に切り替わり、100%表示中は<strong>写真をつかんでドラッグ</strong>すると見たい場所へ動かせます。I キーで撮影データ、Esc で閉じます。閉じると、見ていた写真が選ばれた状態で一覧に戻ります。iPad / iPhone はタップで全画面表示、左右スワイプまたは左右のボタンで前後の写真、ピンチとダブルタップで拡大できます。</dd>
-  <dt>Q. 外付け SSD の写真も整理できますか？</dt>
-  <dd>A. できます。exFAT などのドライブでアクセス権を保存できない場合は「今回のみ」の登録になり、ツリーにオレンジの時計アイコンが表示されます。この場合は次回起動時にもう一度追加してください。</dd>
-  <dt>Q. PhotoParcel Select との連携とは？</dt>
-  <dd>A. 姉妹アプリ <strong>PhotoParcel Select</strong>（大量の RAW から採用カットを選び出すアプリ）がインストールされていると、Mac 版のツールバーに「PhotoParcel Selectでセレクト」ボタンが表示され、いま見ているフォルダをそのまま渡せます。Select 側からも同じように戻ってこられます。インストールされていない場合、ボタンは表示されません。</dd>
-</dl>
+<section class="block alt" id="faq"><div class="wrap">
+  <span class="eyebrow">FAQ</span>
+  <h2>よくある質問</h2>
+  <div class="faq">
+    <details><summary>フォルダが 🔒 表示になり中が見えません</summary><div class="a"><p>アプリからのアクセス権がないフォルダです。「＋ フォルダを追加」からそのフォルダを選び直すとアクセスできるようになります。</p></div></details>
+    <details><summary>RAW ファイルは表示できますか？</summary><div class="a"><p>CR3 / CR2 / ARW / NEF / RAF / DNG など主要な RAW 形式の表示に対応しています（内蔵プレビューを利用した高速表示です。現像処理は行いません）。</p></div></details>
+    <details><summary>写真をコピーではなく移動したい／移動ではなくコピーしたい</summary><div class="a"><p>ドラッグ＆ドロップは「移動」です。iPad / iPhone の「n枚を移動...」から開く移動先の画面では、移動とコピーを切り替えられます。同名ファイルがある場合は「名前 2」のように自動で連番が付き、上書きはされません。</p></div></details>
+    <details><summary>操作を間違えました。元に戻せますか？</summary><div class="a"><p>移動・一括リネーム・ゴミ箱への削除は取り消せます。Mac は ⌘Z（やり直しは ⇧⌘Z）、iPad / iPhone は「…」メニューの「取り消す」から行えます。コピーは対象外です。</p></div></details>
+    <details><summary>写真を削除できますか？</summary><div class="a"><p>できます。Mac は一覧の「削除」ボタン・右クリックの「ゴミ箱に入れる」・Delete キー、iPad / iPhone は選択モードの「n枚を削除」です。<strong>全画面表示からも、見ている1枚を削除できます</strong>（上部のゴミ箱ボタン、Mac は Delete キーまたは D キー）。押すと必ず確認画面が出て、ペアを含めた合計ファイル数が示されます。ゴミ箱に対応していない保存先では完全に削除されるため、その旨が表示されます。</p></div></details>
+    <details><summary>サムネイルに出ている番号は何ですか？</summary><div class="a"><p>いま並んでいる順の通し番号です。全画面表示に出る「n / 総数」と同じ数え方なので、「何枚目を見ているか」が一覧と全画面で一致します。</p></div></details>
+    <details><summary>写真の並び順を変えられますか？</summary><div class="a"><p>既定は撮影日順です。名前・更新日・サイズの順にも変更でき、昇順と降順を切り替えられます（「整理」／「…」メニュー）。</p></div></details>
+    <details><summary>全画面表示の操作方法は？</summary><div class="a"><p>Mac はサムネイルをダブルクリック（または Return キー）で全画面表示。前後の写真へは ← → と ↑ ↓ のどちらでも送れます（画面の左右クリックでも移動します）。Return キー・ダブルクリック・Z キーで<strong>100%表示</strong>に切り替わり、100%表示中は<strong>写真をつかんでドラッグ</strong>すると見たい場所へ動かせます。I キーで撮影データ、Esc で閉じます。閉じると、見ていた写真が選ばれた状態で一覧に戻ります。iPad / iPhone はタップで全画面表示、左右スワイプまたは左右のボタンで前後の写真、ピンチとダブルタップで拡大できます。</p></div></details>
+    <details><summary>外付け SSD の写真も整理できますか？</summary><div class="a"><p>できます。exFAT などのドライブでアクセス権を保存できない場合は「今回のみ」の登録になり、ツリーにオレンジの時計アイコンが表示されます。この場合は次回起動時にもう一度追加してください。</p></div></details>
+    <details><summary>PhotoParcel Select との連携とは？</summary><div class="a"><p>姉妹アプリ <strong>PhotoParcel Select</strong>（大量の RAW から採用カットを選び出すアプリ）がインストールされていると、Mac 版のツールバーに「PhotoParcel Selectでセレクト」ボタンが表示され、いま見ているフォルダをそのまま渡せます。Select 側からも同じように戻ってこられます。インストールされていない場合、ボタンは表示されません。</p></div></details>
+  </div>
+</div></section>
 
-<h2>お問い合わせ</h2>
-<p>不具合のご報告・ご要望は、以下のメールアドレスまでお気軽にご連絡ください。</p>
-<p><a href="mailto:emc.hs07@gmail.com">emc.hs07@gmail.com</a></p>
+<!-- note の記事4（PhotoParcel を作った話）を公開したら、ここに「作った話を読む」の節（id="note"。文字アトリエ・Futamado のページと同じ形）を入れる -->
 
-<p><a href="privacy.html">プライバシーポリシー</a></p>
+<section class="block" id="contact"><div class="wrap contact">
+  <span class="eyebrow">CONTACT</span>
+  <h2>お問い合わせ</h2>
+  <div class="card">
+    <p>不具合のご報告やご要望は、メールでお気軽にどうぞ。</p>
+    <p><a class="btn ghost" href="mailto:emc.hs07@gmail.com">emc.hs07@gmail.com</a></p>
+    <p style="font-size:.9rem;color:var(--mute);margin:14px 0 0;">PhotoParcel は外部と通信せず、データを集めません。くわしくは <a href="privacy.html">プライバシーポリシー</a> をご覧ください。</p>
+  </div>
+</div></section>
+</main>
 
 <!-- この作者のほかのアプリ（ここから） -->
 <section class="other-apps" style="margin-top:3rem;">
@@ -128,81 +313,64 @@
 </ul>
 </section>
 <!-- この作者のほかのアプリ（ここまで） -->
-<hr id="en" style="margin-top:4rem">
-<section lang="en">
-<h1>PhotoParcel Support</h1>
-<p>PhotoParcel is an app for macOS, iPadOS and iOS that moves finished photos into the right folders, quickly and reliably. The app is available in English and Japanese and follows your device's language.</p>
-
-<h2>Getting started</h2>
-<ol>
+<hr id="en" class="en-sep">
+<section lang="en" class="en"><div class="wrap">
+  <section class="block" style="padding-bottom:24px;">
+    <span class="eyebrow">ENGLISH</span>
+    <h2>PhotoParcel Support</h2>
+    <div class="intro" style="max-width:44em;"><p>PhotoParcel is an app for macOS, iPadOS and iOS that moves finished photos into the right folders, quickly and reliably. The app is available in English and Japanese and follows your device's language.</p><p style="font-size:.88rem;">English is available from version 1.5.</p></div>
+    <div class="btns" style="margin-top:0;"><a class="btn primary" href="https://apps.apple.com/us/app/id6797479444">View on the App Store</a></div>
+  </section>
+  <div class="how" style="grid-template-columns:1fr;max-width:780px;margin:0 auto 24px;"><div class="card"><h3>Getting started</h3><ol>
   <li>Tap or click “+ Add Folder” and choose a photo folder you want to organize. Your folders are restored automatically the next time you open the app.</li>
   <li>Select a folder in the tree to see its photos as thumbnails.</li>
   <li>Select thumbnails and drag them onto a folder to move them. That's it.</li>
-</ol>
-
-<h2>Marks for narrowing down</h2>
-<p>Marks are for “I only want to pick a few of these.” <strong>Nothing is written to the photos.</strong> No sidecar files are created and no metadata is changed, so the photos look the same in other apps.</p>
+</ol></div></div>
+  <div class="detail">
+    <div class="card"><h3>Marks for narrowing down</h3><p>Marks are for “I only want to pick a few of these.” <strong>Nothing is written to the photos.</strong> No sidecar files are created and no metadata is changed, so the photos look the same in other apps.</p>
 <ul>
   <li>Select photos and mark them. On Mac use the “Marks” menu above the grid or press <strong>M</strong>. On iPad and iPhone use “Mark n Photos” at the bottom. You can also mark the photo you're viewing in full screen</li>
   <li><strong>Show only marked photos</strong> to narrow your choices further</li>
   <li>Marks stay with photos after you move or rename them, and after you quit the app</li>
   <li>To clear marks all at once, use “Clear All Marks in This Folder” (on iPad and iPhone, in the “…” menu)</li>
-</ul>
-
-<h2>Star filter</h2>
-<p>PhotoParcel reads <strong>star ratings</strong> set in PhotoParcel Select and other standard XMP star ratings (stored in the photo or in a <code>.xmp</code> sidecar), and can show only the photos with a rating. PhotoParcel only reads ratings and never changes them.</p>
+</ul></div>
+    <div class="card"><h3>Star filter<span class="v15">Version 1.5+</span></h3><p>PhotoParcel reads <strong>star ratings</strong> set in PhotoParcel Select and other standard XMP star ratings (stored in the photo or in a <code>.xmp</code> sidecar), and can show only the photos with a rating. PhotoParcel only reads ratings and never changes them.</p>
 <ul>
   <li>On Mac use the “Stars” menu above the grid or “Filter by Stars” in the “Organize” menu. On iPad and iPhone use “Filter by Stars” in the “…” menu. Choose an option such as “3 Stars &amp; Up”</li>
   <li>Rated photos show yellow stars on their thumbnails</li>
   <li>The filter is cleared when you switch folders</li>
-</ul>
-
-<h2>Number keys for one-step sorting</h2>
-<p>Assign numbers 1 to 9 to the folders you use most. Assigned folders show a blue badge in the tree.</p>
+</ul></div>
+    <div class="card"><h3>Number keys for one-step sorting</h3><p>Assign numbers 1 to 9 to the folders you use most. Assigned folders show a blue badge in the tree.</p>
 <ul>
   <li><strong>Mac</strong>: right-click a folder and choose “Assign Number Key.” Then select photos and press the number to move them. In full screen, the photo you're viewing is moved</li>
   <li><strong>iPad / iPhone</strong>: touch and hold a folder and choose “Assign Number Key.” One-tap sorting buttons then appear at the bottom in selection mode and in full screen. In full screen, the next photo is shown after you sort</li>
   <li>To remove assignments, use “Number Key Assignments” in the “Organize” menu (on iPad and iPhone, in the “…” menu)</li>
-</ul>
-
-<h2>RAW + JPG and batch rename</h2>
-<ul>
+</ul></div>
+    <div class="card"><h3>RAW + JPG and batch rename</h3><ul>
   <li>RAW and JPG files with the same name are shown as one item with a “RAW+JPG” badge. When moved, they travel together with any <code>.xmp</code> sidecar (you can turn this off in the “Organize” / “…” menu)</li>
   <li><strong>Batch Rename</strong> is in the “Organize” menu on Mac and the “…” menu on iPad and iPhone. Rename photos with a name, the date taken and a sequence number. RAW+JPG pairs and <code>.xmp</code> sidecars get the same name and number, so pairs stay together</li>
   <li>You can set the <strong>start number</strong>, so numbering can continue from any number, not just 1</li>
   <li>Before you run it, you see how many files will change and a preview of the first and last new names. You can undo it afterward</li>
-</ul>
-
-<h2>FAQ</h2>
-<dl>
-  <dt>Q. A folder shows a lock and I can't see inside it</dt>
-  <dd>A. The app doesn't have access to that folder. Choose the folder again with “+ Add Folder” to give access.</dd>
-  <dt>Q. Can it show RAW files?</dt>
-  <dd>A. Yes. Major RAW formats such as CR3, CR2, ARW, NEF, RAF and DNG are supported (shown quickly using the embedded preview; no RAW processing is done).</dd>
-  <dt>Q. I want to copy instead of move (or the other way around)</dt>
-  <dd>A. Drag and drop moves photos. Switch between “Move” and “Copy” above the grid (on Mac you can also hold Option while dragging to copy). If a file with the same name already exists, a number is added, like “name 2,” so nothing is overwritten.</dd>
-  <dt>Q. I made a mistake. Can I undo it?</dt>
-  <dd>A. Moves, batch renames and moving to the Trash can be undone. On Mac press Command-Z (Shift-Command-Z to redo). On iPad and iPhone use “Undo Move” in the “…” menu. Copies are not undone.</dd>
-  <dt>Q. Can I delete photos?</dt>
-  <dd>A. Yes. On Mac use the Delete button, “Move to Trash” in the right-click menu or the Delete key. On iPad and iPhone use “Delete n Photos” in selection mode. <strong>You can also delete the photo you're viewing in full screen.</strong> A confirmation always appears first and shows the total number of files, including pairs. Locations that don't support the Trash delete files permanently, and the app tells you so.</dd>
-  <dt>Q. What are the numbers on the thumbnails?</dt>
-  <dd>A. They show the current order. They match the “n / total” shown in full screen, so you always know which photo you're on.</dd>
-  <dt>Q. Can I change the sort order?</dt>
-  <dd>A. The default is by date taken. You can also sort by name, date modified or size, in ascending or descending order (“Organize” / “…” menu).</dd>
-  <dt>Q. How do I use full screen?</dt>
-  <dd>A. On Mac, double-click a thumbnail (or press Return). Use the arrow keys to go to the next or previous photo. Press Return, Z or double-click to switch to <strong>100% view</strong>, and <strong>drag the photo</strong> to look around. Press I for shooting details and Esc to close. On iPad and iPhone, tap a photo for full screen, swipe or use the side buttons to move between photos, and pinch or double-tap to zoom.</dd>
-  <dt>Q. Can I organize photos on an external SSD?</dt>
-  <dd>A. Yes. If the drive (exFAT, for example) can't keep access permissions, the folder is added “for this session only” and shows an orange clock icon in the tree. Add it again the next time you open the app.</dd>
-  <dt>Q. What is the PhotoParcel Select integration?</dt>
-  <dd>A. When the companion app <strong>PhotoParcel Select</strong> (for picking keepers from large sets of RAW files) is installed, the Mac toolbar shows “Pick in PhotoParcel Select,” which hands the current folder over directly. You can come back the same way. If Select isn't installed, the button isn't shown.</dd>
-</dl>
-
-<h2>Contact</h2>
-<p>For bug reports or requests, please email us. English or Japanese is fine.</p>
+</ul></div>
+  </div>
+  <h2 style="margin-top:48px;">FAQ</h2>
+  <div class="faq">
+    <details><summary>A folder shows a lock and I can't see inside it</summary><div class="a"><p>The app doesn't have access to that folder. Choose the folder again with “+ Add Folder” to give access.</p></div></details>
+    <details><summary>Can it show RAW files?</summary><div class="a"><p>Yes. Major RAW formats such as CR3, CR2, ARW, NEF, RAF and DNG are supported (shown quickly using the embedded preview; no RAW processing is done).</p></div></details>
+    <details><summary>I want to copy instead of move (or the other way around)</summary><div class="a"><p>Drag and drop moves photos. Switch between “Move” and “Copy” above the grid (on Mac you can also hold Option while dragging to copy). If a file with the same name already exists, a number is added, like “name 2,” so nothing is overwritten.</p></div></details>
+    <details><summary>I made a mistake. Can I undo it?</summary><div class="a"><p>Moves, batch renames and moving to the Trash can be undone. On Mac press Command-Z (Shift-Command-Z to redo). On iPad and iPhone use “Undo Move” in the “…” menu. Copies are not undone.</p></div></details>
+    <details><summary>Can I delete photos?</summary><div class="a"><p>Yes. On Mac use the Delete button, “Move to Trash” in the right-click menu or the Delete key. On iPad and iPhone use “Delete n Photos” in selection mode. <strong>You can also delete the photo you're viewing in full screen.</strong> A confirmation always appears first and shows the total number of files, including pairs. Locations that don't support the Trash delete files permanently, and the app tells you so.</p></div></details>
+    <details><summary>What are the numbers on the thumbnails?</summary><div class="a"><p>They show the current order. They match the “n / total” shown in full screen, so you always know which photo you're on.</p></div></details>
+    <details><summary>Can I change the sort order?</summary><div class="a"><p>The default is by date taken. You can also sort by name, date modified or size, in ascending or descending order (“Organize” / “…” menu).</p></div></details>
+    <details><summary>How do I use full screen?</summary><div class="a"><p>On Mac, double-click a thumbnail (or press Return). Use the arrow keys to go to the next or previous photo. Press Return, Z or double-click to switch to <strong>100% view</strong>, and <strong>drag the photo</strong> to look around. Press I for shooting details and Esc to close. On iPad and iPhone, tap a photo for full screen, swipe or use the side buttons to move between photos, and pinch or double-tap to zoom.</p></div></details>
+    <details><summary>Can I organize photos on an external SSD?</summary><div class="a"><p>Yes. If the drive (exFAT, for example) can't keep access permissions, the folder is added “for this session only” and shows an orange clock icon in the tree. Add it again the next time you open the app.</p></div></details>
+    <details><summary>What is the PhotoParcel Select integration?</summary><div class="a"><p>When the companion app <strong>PhotoParcel Select</strong> (for picking keepers from large sets of RAW files) is installed, the Mac toolbar shows “Pick in PhotoParcel Select,” which hands the current folder over directly. You can come back the same way. If Select isn't installed, the button isn't shown.</p></div></details>
+  </div>
+  <div class="contact" style="margin-top:40px;"><div class="card"><p>For bug reports or requests, please email us. English or Japanese is fine.</p>
 <p><a href="mailto:emc.hs07@gmail.com">emc.hs07@gmail.com</a></p>
 
-<p><a href="privacy.html#en">Privacy Policy</a></p>
-</section>
+<p><a href="privacy.html#en">Privacy Policy</a></p></div></div>
+</div></section>
 
 <footer>© 2026 Hideki Sato — PhotoParcel</footer>
 </body>
